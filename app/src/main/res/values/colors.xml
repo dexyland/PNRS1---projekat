@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="redButtonE">#FF0000</color>
+    <color name="redButtonD">#ffbaba</color>
+    <color name="greenButtonE">#3fab16</color>
+    <color name="greenButtonD">#dfffb8</color>
+    <color name="yellowButtonE">#f1e617</color>
+    <color name="yellowButtonD">#fffaca</color>
+    <color name="regularButton1">#C5CAE9</color>
+    <color name="regularButton2">#FFE0A3</color>
+    <color name="yellowButtonE2">#f2d904</color>
+
+    <color name="activityBackground1">#000000</color>
+    <color name="activityBackground2">#81D4FA</color>
+    <color name="activityBackground3">#FFFFFF</color>
+    <color name="activityBackground4">#5D6D7E</color>
+    <color name="activityBackground5">#E5E7E9</color>
+    <color name="activityBackground6">#FFDCB9</color>
+
+    <color name="editBoxBackground1">#FFF8E1</color>
+    <color name="editBoxBackground2">#00F8E1</color>
+    <color name="listElement">#c4bfbf</color>
+
+    <color name="graphTitle">#361515</color>
+</resources>
