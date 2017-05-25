@@ -30,10 +30,21 @@ public class MyAdapter extends BaseAdapter{
         notifyDataSetChanged();
     }
 
+    public void editTask(int position, listElement mListElement)
+    {
+        mTaskList.remove(position);
+        mTaskList.add(position, mListElement);
+        notifyDataSetChanged();
+    }
+
     public void removeTask(int position)
     {
         mTaskList.remove(position);
         notifyDataSetChanged();
+    }
+
+    public ArrayList<listElement> getTasks(){
+        return mTaskList;
     }
 
     @Override
@@ -74,6 +85,7 @@ public class MyAdapter extends BaseAdapter{
             ViewHolder mViewHolder = new ViewHolder();
             mViewHolder.mName = (TextView) mView.findViewById(R.id.TaskName);
             mViewHolder.mDate = (TextView) mView.findViewById(R.id.date);
+            mViewHolder.mTime = (TextView) mView.findViewById(R.id.time);
             mViewHolder.mPriority= (ImageView) mView.findViewById(R.id.priority);
             mViewHolder.mReminder = (ImageView) mView.findViewById(R.id.reminder);
             mViewHolder.mCheckbox = (CheckBox) mView.findViewById(R.id.check);
@@ -84,6 +96,7 @@ public class MyAdapter extends BaseAdapter{
         final ViewHolder mViewHolder = (ViewHolder) mView.getTag();
         mViewHolder.mName.setText(mListElement.mTaskName);
         mViewHolder.mDate.setText(mListElement.mTaskDate);
+        mViewHolder.mTime.setText(mListElement.getTaskTime());
 
         switch (mListElement.mTaskPriority){
             case "green":
@@ -122,6 +135,7 @@ public class MyAdapter extends BaseAdapter{
     {
         public TextView mName = null;
         public TextView mDate = null;
+        public TextView mTime = null;
         public ImageView mPriority = null;
         public ImageView mReminder = null;
         public CheckBox mCheckbox = null;

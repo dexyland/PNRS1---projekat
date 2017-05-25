@@ -11,7 +11,7 @@
         android:id="@+id/priority"
         android:layout_width="60dp"
         android:scaleType="centerCrop"
-        android:layout_height="60dp"
+        android:layout_height="65dp"
         android:layout_alignParentLeft="true">
     </ImageView>
 
@@ -28,17 +28,27 @@
     <TextView
         android:id="@+id/date"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true">
+    </TextView>
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_below="@+id/date"
         android:layout_marginRight="10dp"
         android:layout_alignParentRight="true">
     </TextView>
 
     <CheckBox
         android:id="@+id/check"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/date"
+        android:layout_below="@+id/time"
         android:layout_marginRight="15dp"/>
 
     <ImageView

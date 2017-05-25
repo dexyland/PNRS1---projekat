@@ -18,5 +18,11 @@
         </activity>
         <activity android:name=".TaskCreator" />
         <activity android:name=".Statistics" />
+
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
     </application>
 </manifest>

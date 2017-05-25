@@ -16,4 +16,13 @@
     <string name="save">Sačuvaj</string>
     <string name="delete">Obriši</string>
     <string name="statisticsTitle">Procenat završenih zadataka:</string>
+    <string name="monday">Pondeljak</string>
+    <string name="tuesday">Utorak</string>
+    <string name="wednesday">Sreda</string>
+    <string name="thursday">Cetvrtak</string>
+    <string name="friday">Petak</string>
+    <string name="saturday">Subota</string>
+    <string name="sunday">Nedelja</string>
+    <string name="today">Danas</string>
+    <string name="tommorow">Sutra</string>
 </resources>

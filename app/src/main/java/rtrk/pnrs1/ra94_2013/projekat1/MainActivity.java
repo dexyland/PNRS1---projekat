@@ -1,15 +1,21 @@
 package rtrk.pnrs1.ra94_2013.projekat1;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, ServiceConnection{
 
     private Button newTask;
     private Button statistics;
@@ -29,6 +35,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int mediumPerc = 76;            //  Used to store percentage of finished tasks. (Not accurate!)
     int lowPerc = 100;              //
 
+    private IMyAidlInterface mNotification;
+    private ServiceConnection mServiceConnection;
+    private Intent mServiceIntent;
+
+    public static ArrayList<listElement> mTaskList;
+
     private String mDateToDisplay;
 
     @Override
@@ -40,6 +52,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         statistics = (Button)findViewById(R.id.statistics);
         mList = (ListView)findViewById(R.id.list);
         mTaskAdapter = new MyAdapter(MainActivity.this);
+
+        mServiceConnection = this;
+        mServiceIntent = new Intent(this, MyService.class);
+        bindService(mServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        mTaskList = mTaskAdapter.getTasks();
 
         newTask.setOnClickListener(this);
         statistics.setOnClickListener(this);
@@ -92,13 +109,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             mTaskAdapter.addTask(new listElement(data.getStringExtra("Name"),
                                                  mDateToDisplay,
+                                                 data.getExtras().getInt("Hour"),
+                                                 data.getExtras().getInt("Minute"),
                                                  data.getStringExtra("Priority"),
                                                  data.getExtras().getBoolean("ReminderSet")));
-            mTaskAdapter.notifyDataSetChanged();
+            //mTaskAdapter.notifyDataSetChanged();
+
+            try {
+                mNotification.onNotificationAdd(data.getStringExtra("Name"));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
-        if(requestCode == LONG_PRESS_START && resultCode == RESULT_CANCELED)
+        if(requestCode == LONG_PRESS_START && resultCode == RESULT_OK)
         {
-            mTaskAdapter.removeTask(mPosition);
+            if(data.getExtras().getInt("Button") == 0){
+                mTaskAdapter.editTask(mPosition, new listElement(data.getStringExtra("Name"),
+                        mDateToDisplay,
+                        data.getExtras().getInt("Hour"),
+                        data.getExtras().getInt("Minute"),
+                        data.getStringExtra("Priority"),
+                        data.getExtras().getBoolean("ReminderSet")));
+                //mTaskAdapter.notifyDataSetChanged();
+                try {
+                    mNotification.onNotificationEdit(data.getStringExtra("Name"));
+                } catch(RemoteException e){
+                    e.printStackTrace();
+                }
+            }
+            else if(data.getExtras().getInt("Button") == 1) {
+                mTaskAdapter.removeTask(mPosition);
+                try {
+                    mNotification.onNotificationDelete(data.getStringExtra("Name"));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -114,11 +160,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             if(c.get(Calendar.DAY_OF_YEAR) - ref.get(Calendar.DAY_OF_YEAR) == 0)
             {
-                mDateToDisplay = "Danas";
+                mDateToDisplay = getString(R.string.today);
             }
             else if(c.get(Calendar.DAY_OF_YEAR) - ref.get(Calendar.DAY_OF_YEAR) == 1)
             {
-                mDateToDisplay = "Sutra";
+                mDateToDisplay = getString(R.string.tommorow);
             }
             else if(c.get(Calendar.DAY_OF_YEAR) - ref.get(Calendar.DAY_OF_YEAR) >=2 &&
                     c.get(Calendar.DAY_OF_YEAR) - ref.get(Calendar.DAY_OF_YEAR) <7)
@@ -127,37 +173,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 {
                     case(Calendar.MONDAY) :
                     {
-                        mDateToDisplay = "Ponedeljak";
+                        mDateToDisplay = getString(R.string.monday);
                         break;
                     }
                     case(Calendar.TUESDAY) :
                     {
-                        mDateToDisplay = "Utorak";
+                        mDateToDisplay = getString(R.string.tuesday);
                         break;
                     }
                     case(Calendar.WEDNESDAY) :
                     {
-                        mDateToDisplay = "Sreda";
+                        mDateToDisplay = getString(R.string.wednesday);
                         break;
                     }
                     case(Calendar.THURSDAY) :
                     {
-                        mDateToDisplay = "Cetvrtak";
+                        mDateToDisplay = getString(R.string.thursday);
                         break;
                     }
                     case(Calendar.FRIDAY) :
                     {
-                        mDateToDisplay = "Petak";
+                        mDateToDisplay = getString(R.string.friday);
                         break;
                     }
                     case(Calendar.SATURDAY) :
                     {
-                        mDateToDisplay = "Subota";
+                        mDateToDisplay = getString(R.string.saturday);
                         break;
                     }
                     case(Calendar.SUNDAY) :
                     {
-                        mDateToDisplay = "Nedelja";
+                        mDateToDisplay = getString(R.string.sunday);
                         break;
                     }
                 }
@@ -173,4 +219,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else
             return "0" + String.valueOf(c);
     }
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service){
+        mNotification = IMyAidlInterface.Stub.asInterface(service);
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name){}
 }

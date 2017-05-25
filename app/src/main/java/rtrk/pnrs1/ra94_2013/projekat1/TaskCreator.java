@@ -114,7 +114,10 @@ public class TaskCreator extends AppCompatActivity implements View.OnClickListen
                     i3.putExtra("Year", year);
                     i3.putExtra("Month", month);
                     i3.putExtra("Day", day);
+                    i3.putExtra("Hour", hour);
+                    i3.putExtra("Minute", minute);
                     i3.putExtra("ReminderSet", checkBox.isChecked());
+                    i3.putExtra("Button", 0);
 
                     setResult(RESULT_OK, i3);
                     this.finish();
@@ -124,7 +127,10 @@ public class TaskCreator extends AppCompatActivity implements View.OnClickListen
                 break;
 
             case R.id.cancel :
-                setResult(RESULT_CANCELED);
+                Intent i4 = new Intent(this, MainActivity.class);
+                i4.putExtra("Name", taskname.getText().toString());
+                i4.putExtra("Button", 1);
+                setResult(RESULT_OK, i4);
                 this.finish();
                 break;
         }
