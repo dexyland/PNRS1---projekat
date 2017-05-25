@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                                  data.getExtras().getInt("Minute"),
                                                  data.getStringExtra("Priority"),
                                                  data.getExtras().getBoolean("ReminderSet")));
-            //mTaskAdapter.notifyDataSetChanged();
 
             try {
                 mNotification.onNotificationAdd(data.getStringExtra("Name"));
@@ -130,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         data.getExtras().getInt("Minute"),
                         data.getStringExtra("Priority"),
                         data.getExtras().getBoolean("ReminderSet")));
-                //mTaskAdapter.notifyDataSetChanged();
                 try {
                     mNotification.onNotificationEdit(data.getStringExtra("Name"));
                 } catch(RemoteException e){
