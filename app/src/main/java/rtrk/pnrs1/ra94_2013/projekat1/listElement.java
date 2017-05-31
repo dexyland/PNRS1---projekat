@@ -5,23 +5,42 @@ import java.io.Serializable;
 public class listElement implements Serializable {
 
     protected String mTaskName;
+    protected String mTaskDescription;
     protected String mTaskDate;
     protected String mTaskPriority;
 
     protected int mTaskHour;
     protected int mTaskMinute;
+    protected int mTaskReminder;
 
-    protected boolean mTaskReminder;
-    protected boolean mTaskNotified;
+    protected long mTaskPositionId;
 
-    public listElement(String name, String date, int hour, int minute, String priority, boolean reminderSet)
+    public listElement(long positionId, String name, String description, String date, int hour, int minute, String priority, int reminderSet)
     {
+        mTaskPositionId = positionId;
         mTaskName = name;
+        mTaskDescription = description;
         mTaskDate = date;
         mTaskHour = hour;
         mTaskMinute = minute;
         mTaskPriority = priority;
         mTaskReminder = reminderSet;
+    }
+
+    public void setTaskDescription(String mTaskDescription){
+        this.mTaskDescription = mTaskDescription;
+    }
+
+    public String getTaskDescription(){
+        return mTaskDescription;
+    }
+
+    public void setTaskId(long positionId){
+        this.mTaskPositionId = positionId;
+    }
+
+    public long getTaskId(){
+        return mTaskPositionId;
     }
 
     public void setTaskName(String mTaskName){
@@ -68,11 +87,11 @@ public class listElement implements Serializable {
         return pad(mTaskHour) + ":" + pad(mTaskMinute);
     }
 
-    public void setmTaskReminder(boolean mTaskReminder){
+    public void setmTaskReminder(int mTaskReminder){
         this.mTaskReminder = mTaskReminder;
     }
 
-    public boolean getTaskReminder(){
+    public int getTaskReminder(){
         return mTaskReminder;
     }
 

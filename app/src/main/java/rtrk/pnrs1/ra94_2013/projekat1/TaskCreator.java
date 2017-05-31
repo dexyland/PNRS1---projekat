@@ -18,10 +18,6 @@ import java.util.Calendar;
 public class TaskCreator extends AppCompatActivity implements View.OnClickListener {
 
     private String taskPriority = null;
-    private String taskNameref = "Ime zadatka";
-    private String descriptionref = "Opis zadatka";
-    private String leftButton = null;
-    private String rightButton = null;
 
     private EditText taskname;
     private EditText description;
@@ -33,6 +29,8 @@ public class TaskCreator extends AppCompatActivity implements View.OnClickListen
     private Button red;
     private Button yellow;
     private Button green;
+    private Button leftButton;
+    private Button rightButton;
 
     private int hour;
     private int minute;
@@ -42,34 +40,29 @@ public class TaskCreator extends AppCompatActivity implements View.OnClickListen
 
     static final int DATE_DIALOG_ID = 999;
     static final int TIME_DIALOG_ID = 888;
+    static final int ADD_MODE_ID = 0;
+    static final int EDIT_MODE_ID = 1;
+
+    private MyDbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        Button add;
-        Button cancel;
+        red = (Button)findViewById(R.id.red);
+        yellow = (Button)findViewById(R.id.yellow);
+        green = (Button)findViewById(R.id.green);
+        leftButton = (Button)findViewById(R.id.add);
+        rightButton = (Button)findViewById(R.id.cancel);
+
+        red.setOnClickListener(this);
+        yellow.setOnClickListener(this);
+        green.setOnClickListener(this);
+        leftButton.setOnClickListener(this);
+        rightButton.setOnClickListener(this);
 
         checkBox = (CheckBox)findViewById(R.id.checkbox);
-
-        yellow = (Button)findViewById(R.id.yellow);
-        cancel = (Button)findViewById(R.id.cancel);
-        green = (Button)findViewById(R.id.green);
-        add = (Button)findViewById(R.id.add);
-        red = (Button)findViewById(R.id.red);
-
-        yellow.setOnClickListener(this);
-        cancel.setOnClickListener(this);
-        green.setOnClickListener(this);
-        red.setOnClickListener(this);
-        add.setOnClickListener(this);
-
-        leftButton = getIntent().getStringExtra("leftButtonLabel");
-        rightButton = getIntent().getStringExtra("rightButtonLabel");
-
-        add.setText(leftButton);
-        cancel.setText(rightButton);
 
         taskname = (EditText)findViewById(R.id.taskName);
         description = (EditText)findViewById(R.id.description);
@@ -79,6 +72,25 @@ public class TaskCreator extends AppCompatActivity implements View.OnClickListen
 
         setCurrentValues();                                                                                                             //     Sets text on 'date' and 'time' button to current values
         addListenerOnButton();                                                                                                          //     Adds listeners on 'time' and 'date' button in order to initiate
+
+        int mMode = getIntent().getExtras().getInt("MODE");
+
+        if(mMode == ADD_MODE_ID){
+            leftButton.setText(getText(R.string.leftButtonAddMode));
+            rightButton.setText(getText(R.string.rightButtonAddMode));
+            taskname.setText(getText(R.string.taskNameBox));
+            description.setText(getText(R.string.taskDescBox));
+
+        } else if(mMode == EDIT_MODE_ID) {
+            leftButton.setText(getText(R.string.leftButtonEditMode));
+            rightButton.setText(getText(R.string.rightButtonEditMode));
+
+            int positionID = getIntent().getExtras().getInt("position");
+            listElement mListElement = mDbHelper.readTask(positionID);
+
+            taskname.setText(mListElement.mTaskName);
+            description.setText(mListElement.mTaskDescription);
+        }
     }                                                                                                                                   // time/date picker dialog when the button is pressed
 
     @Override
@@ -116,7 +128,13 @@ public class TaskCreator extends AppCompatActivity implements View.OnClickListen
                     i3.putExtra("Day", day);
                     i3.putExtra("Hour", hour);
                     i3.putExtra("Minute", minute);
-                    i3.putExtra("ReminderSet", checkBox.isChecked());
+
+                    if(checkBox.isChecked()) {
+                        i3.putExtra("ReminderSet", 1);
+                    }
+                    else
+                        i3.putExtra("ReminderSet", 0);
+
                     i3.putExtra("Button", 0);
 
                     setResult(RESULT_OK, i3);
@@ -214,8 +232,8 @@ public class TaskCreator extends AppCompatActivity implements View.OnClickListen
                                                                                                                                         //
     private boolean CheckCondition() {                                                                                                  //   **   'Dodaj' button requires valid parameters so it can be pressed.    **
         if(     (taskPriority != null) &&                                                                                               //   **    Valid parameters include task name, description of the task,     **
-                (!taskNameref.equals(taskname.getText().toString())) &&                                                                 //   **  one of the priority buttons to be pressed and valid time and date  **
-                (!descriptionref.equals(description.getText().toString())) &&                                                           //   **                  (event must to happen in future)                   **
+                (!(taskname.getText().toString()).equals(getText(R.string.taskNameBox))) &&                                                                 //   **  one of the priority buttons to be pressed and valid time and date  **
+                (!(description.getText().toString()).equals(getText(R.string.taskDescBox))) &&                                                           //   **                  (event must to happen in future)                   **
                 (!(taskname.getText().toString()).equals("")) &&                                                                        //    CheckCondition() function enables pressing button 'Dodaj' when all
                 (!(description.getText().toString()).equals("")) &&                                                                     // parameters are valid.
                 checkTime())

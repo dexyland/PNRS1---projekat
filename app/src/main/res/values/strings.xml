@@ -1,21 +1,22 @@
 <resources>
     <string name="app_name">Projekat1</string>
     <string name="app_title">Task manager</string>
+
     <string name="newTask">Novi zadatak</string>
     <string name="statistics">Statistika</string>
+
     <string name="taskName">Ime zadatka</string>
     <string name="textbox1">Rok za izvršenje zadatka :</string>
     <string name="time">Vreme</string>
     <string name="date">Datum</string>
     <string name="description">Opis zadatka</string>
-    <string name="add">Dodaj</string>
-    <string name="cancel">Otkaži</string>
+
     <string name="checkbox">Podseti me 15 minuta pre završetka!</string>
     <string name="textbox2">Prioritet zadatka :</string>
     <string name="enter">Uneti</string>
-    <string name="save">Sačuvaj</string>
-    <string name="delete">Obriši</string>
     <string name="statisticsTitle">Procenat završenih zadataka:</string>
+
+    <!--String tags used to format date output-->
     <string name="monday">Pondeljak</string>
     <string name="tuesday">Utorak</string>
     <string name="wednesday">Sreda</string>
@@ -25,4 +26,13 @@
     <string name="sunday">Nedelja</string>
     <string name="today">Danas</string>
     <string name="tommorow">Sutra</string>
+
+    <!-- String in TaskCreator activity -->
+
+    <string name="leftButtonAddMode">Dodaj</string>
+    <string name="rightButtonAddMode">Otkaži</string>
+    <string name="leftButtonEditMode">Sačuvaj</string>
+    <string name="rightButtonEditMode">Obriši</string>
+    <string name="taskNameBox">Ime zadatka</string>
+    <string name="taskDescBox">Opis zadatka</string>
 </resources>

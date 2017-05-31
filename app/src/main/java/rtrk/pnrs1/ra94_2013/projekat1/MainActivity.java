@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MyAdapter mTaskAdapter;
 
     private int mPosition;
-    private int NORMAL_START = 0;
-    private int LONG_PRESS_START = 1;
+    private int ADD_MODE = 0;
+    private int EDIT_MODE = 1;
 
     private int year;
     private int month;
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static ArrayList<listElement> mTaskList;
 
     private String mDateToDisplay;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +66,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override                                                                                           // Also sets labels for buttons on bottom of activity to corresponding ones.
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i1 = new Intent(MainActivity.this, TaskCreator.class);
-                i1.putExtra("leftButtonLabel", getText(R.string.save));
-                i1.putExtra("rightButtonLabel", getText(R.string.delete));
                 mPosition = position;
                 i1.putExtra("listElement", position);
-                startActivityForResult(i1, LONG_PRESS_START);
+                i1.putExtra("MODE", EDIT_MODE);
+                startActivityForResult(i1, EDIT_MODE);
                 return true;
             }
         });
@@ -82,9 +82,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch(v.getId()){
             case R.id.newTask :                                                                               // Register a click on button and starts activity with request code NORMAL_START.
                 Intent i2 = new Intent(this, TaskCreator.class);                                              // Also sets labels for buttons on bottom of activity to corresponding ones.
-                i2.putExtra("leftButtonLabel", getText(R.string.add));
-                i2.putExtra("rightButtonLabel", getText(R.string.cancel));
-                startActivityForResult(i2, NORMAL_START);
+                i2.putExtra("MODE", ADD_MODE);
+                startActivityForResult(i2, ADD_MODE);
                 break;
 
             case R.id.statistics :
@@ -100,19 +99,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {                             // Method automatically invoked after closing an activity started from this activity that was expected an result from.
         super.onActivityResult(requestCode, resultCode, data);                                                  // According to 'request code' and 'result code' activity retrieved appropriate methods are called.
-        if(requestCode == NORMAL_START && resultCode == RESULT_OK)
+        if(requestCode == ADD_MODE && resultCode == RESULT_OK)
         {
             year = data.getExtras().getInt("Year");
             month = data.getExtras().getInt("Month");
             day = data.getExtras().getInt("Day");
             makeDate();
 
-            mTaskAdapter.addTask(new listElement(data.getStringExtra("Name"),
+            mTaskAdapter.addTask(new listElement(0, data.getStringExtra("Name"),
+                                                 data.getStringExtra("Description"),
                                                  mDateToDisplay,
                                                  data.getExtras().getInt("Hour"),
                                                  data.getExtras().getInt("Minute"),
                                                  data.getStringExtra("Priority"),
-                                                 data.getExtras().getBoolean("ReminderSet")));
+                                                 data.getExtras().getInt("ReminderSet")));
 
             try {
                 mNotification.onNotificationAdd(data.getStringExtra("Name"));
@@ -120,15 +120,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         }
-        if(requestCode == LONG_PRESS_START && resultCode == RESULT_OK)
+        if(requestCode == EDIT_MODE && resultCode == RESULT_OK)
         {
             if(data.getExtras().getInt("Button") == 0){
-                mTaskAdapter.editTask(mPosition, new listElement(data.getStringExtra("Name"),
-                        mDateToDisplay,
-                        data.getExtras().getInt("Hour"),
-                        data.getExtras().getInt("Minute"),
-                        data.getStringExtra("Priority"),
-                        data.getExtras().getBoolean("ReminderSet")));
+                //mTaskAdapter.editTask();
                 try {
                     mNotification.onNotificationEdit(data.getStringExtra("Name"));
                 } catch(RemoteException e){

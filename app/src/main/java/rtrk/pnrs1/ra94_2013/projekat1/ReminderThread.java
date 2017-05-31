@@ -51,7 +51,7 @@ public class ReminderThread  extends Thread{
         while(mCheck){
             for(listElement mListElement : MainActivity.mTaskList)
             {
-                if(mListElement.getTaskDate().equals(mContext.getResources().getString(R.string.today)) && mListElement.getTaskReminder()){
+                if(mListElement.getTaskDate().equals(mContext.getResources().getString(R.string.today)) && mListElement.getTaskReminder() == 1){
                     Calendar mCurrentDate = Calendar.getInstance();
 
                     if(mListElement.getTaskHour() == (int)mCurrentDate.get(Calendar.HOUR_OF_DAY)){
@@ -62,7 +62,7 @@ public class ReminderThread  extends Thread{
                                 mNotificationString += ", " + mListElement.getTaskName() + " (" + mListElement.getTaskTime() + ")";
 
                             mShowNotification = true;
-                            mListElement.setmTaskReminder(false);
+                            mListElement.setmTaskReminder(0);
                         }
                     }
                     else if((mListElement.getTaskHour() - mCurrentDate.get(Calendar.HOUR_OF_DAY)) == 1){
@@ -73,7 +73,7 @@ public class ReminderThread  extends Thread{
                                 mNotificationString += ", " + mListElement.getTaskName() + " (" + mListElement.getTaskTime() + ")";
 
                             mShowNotification = true;
-                            mListElement.setmTaskReminder(false);
+                            mListElement.setmTaskReminder(0);
                         }
                     }
                 }

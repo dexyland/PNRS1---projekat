@@ -110,7 +110,7 @@ public class MyAdapter extends BaseAdapter{
                         break;
         }
 
-        if(mListElement.mTaskReminder)
+        if(mListElement.mTaskReminder == 1)
             mViewHolder.mReminder.setImageResource(R.drawable.bell);
         else
             mViewHolder.mReminder.setImageResource(R.drawable.bellmute);
