@@ -18,11 +18,14 @@ import java.util.Calendar;
 public class TaskCreator extends AppCompatActivity implements View.OnClickListener {
 
     private String taskPriority = null;
+    private String mTaskName = null;
+    private String mTaskDescription = null;
 
     private EditText taskname;
     private EditText description;
 
     private CheckBox checkBox;
+    private Calendar calendar;
 
     private Button btnChangeDate;
     private Button btnChangeTime;
@@ -73,23 +76,42 @@ public class TaskCreator extends AppCompatActivity implements View.OnClickListen
         setCurrentValues();                                                                                                             //     Sets text on 'date' and 'time' button to current values
         addListenerOnButton();                                                                                                          //     Adds listeners on 'time' and 'date' button in order to initiate
 
-        int mMode = getIntent().getExtras().getInt("MODE");
+        mDbHelper = new MyDbHelper(this);
+
+        int mMode = getIntent().getExtras().getInt(getString(R.string.mode));
 
         if(mMode == ADD_MODE_ID){
             leftButton.setText(getText(R.string.leftButtonAddMode));
             rightButton.setText(getText(R.string.rightButtonAddMode));
-            taskname.setText(getText(R.string.taskNameBox));
-            description.setText(getText(R.string.taskDescBox));
-
         } else if(mMode == EDIT_MODE_ID) {
             leftButton.setText(getText(R.string.leftButtonEditMode));
             rightButton.setText(getText(R.string.rightButtonEditMode));
+            listElement mListElement = mDbHelper.readTask(String.valueOf(getIntent().getExtras().getInt(getString(R.string.taskPosition))));
 
-            int positionID = getIntent().getExtras().getInt("position");
-            listElement mListElement = mDbHelper.readTask(positionID);
+            taskname.setText(mListElement.getTaskName());
+            description.setText(mListElement.getTaskDescription());
+            btnChangeDate.setText(mListElement.getTaskDate());
+            String mTaskTime = pad(mListElement.getTaskHour()) + ":" +pad(mListElement.getTaskMinute());
+            btnChangeTime.setText(mTaskTime);
+            String mTaskPriority = mListElement.getTaskPriority();
 
-            taskname.setText(mListElement.mTaskName);
-            description.setText(mListElement.mTaskDescription);
+
+            if (getString(R.string.lowPriority).equals(mTaskPriority)) {
+                green.setBackground(this.getResources().getDrawable(R.drawable.green_button_enabled));                                  //
+                red.setBackground(this.getResources().getDrawable(R.drawable.red_button_disabled));                                     //
+                yellow.setBackground(this.getResources().getDrawable(R.drawable.yellow_button_disabled));                               //
+                taskPriority = getString(R.string.lowPriority);                                                                                                   //
+            } else if (getString(R.string.mediumPriority).equals(mTaskPriority)) {                                                                                                        //       ** When any of the red/yellow/green buttons is pressed **
+                green.setBackground(this.getResources().getDrawable(R.drawable.green_button_disabled));                                 //       **      other two buttons should appear 'disabled'     **
+                red.setBackground(this.getResources().getDrawable(R.drawable.red_button_disabled));                                     //
+                yellow.setBackground(this.getResources().getDrawable(R.drawable.yellow_button_enabled));                                //
+                taskPriority = getString(R.string.mediumPriority);                                                                                                  //
+            } else{
+                green.setBackground(this.getResources().getDrawable(R.drawable.green_button_disabled));                                 //
+                red.setBackground(this.getResources().getDrawable(R.drawable.red_button_enabled));                                      //
+                yellow.setBackground(this.getResources().getDrawable(R.drawable.yellow_button_disabled));                               //
+                taskPriority = getString(R.string.highPriority);
+            }
         }
     }                                                                                                                                   // time/date picker dialog when the button is pressed
 
@@ -100,44 +122,49 @@ public class TaskCreator extends AppCompatActivity implements View.OnClickListen
                 green.setBackground(this.getResources().getDrawable(R.drawable.green_button_enabled));                                  //
                 red.setBackground(this.getResources().getDrawable(R.drawable.red_button_disabled));                                     //
                 yellow.setBackground(this.getResources().getDrawable(R.drawable.yellow_button_disabled));                               //
-                taskPriority="green";                                                                                                   //
+                taskPriority=getString(R.string.lowPriority);                                                                                                   //
                 break;                                                                                                                  //
                                                                                                                                         //
             case R.id.yellow :                                                                                                          //       ** When any of the red/yellow/green buttons is pressed **
                 green.setBackground(this.getResources().getDrawable(R.drawable.green_button_disabled));                                 //       **      other two buttons should appear 'disabled'     **
                 red.setBackground(this.getResources().getDrawable(R.drawable.red_button_disabled));                                     //
                 yellow.setBackground(this.getResources().getDrawable(R.drawable.yellow_button_enabled));                                //
-                taskPriority="yellow";                                                                                                  //
+                taskPriority=getString(R.string.mediumPriority);                                                                                                  //
                 break;                                                                                                                  //
                                                                                                                                         //
             case R.id.red :                                                                                                             //    This part of the case structure implements the functionality mentioned above.
                 green.setBackground(this.getResources().getDrawable(R.drawable.green_button_disabled));                                 //
                 red.setBackground(this.getResources().getDrawable(R.drawable.red_button_enabled));                                      //
                 yellow.setBackground(this.getResources().getDrawable(R.drawable.yellow_button_disabled));                               //
-                taskPriority="red";
+                taskPriority=getString(R.string.highPriority);
                 break;
 
             case R.id.add :
                 if(CheckCondition())                                                                                                    //    Functionality of CheckCondition() function described below.
                 {
-                    Intent i3 = new Intent(this, MainActivity.class);
-                    i3.putExtra("Name", taskname.getText().toString());
-                    i3.putExtra("Priority", taskPriority);
-                    i3.putExtra("Year", year);
-                    i3.putExtra("Month", month);
-                    i3.putExtra("Day", day);
-                    i3.putExtra("Hour", hour);
-                    i3.putExtra("Minute", minute);
+                    calendar = Calendar.getInstance();
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.MONTH, month);
+                    calendar.set(Calendar.DAY_OF_MONTH, day);
+                    calendar.set(Calendar.HOUR_OF_DAY, hour);
+                    calendar.set(Calendar.MINUTE, minute);
 
-                    if(checkBox.isChecked()) {
-                        i3.putExtra("ReminderSet", 1);
-                    }
+                    int reminder;
+
+                    if(checkBox.isChecked())
+                        reminder = 1;
                     else
-                        i3.putExtra("ReminderSet", 0);
+                        reminder = 0;
 
-                    i3.putExtra("Button", 0);
+                    mTaskName = taskname.getText().toString();
+                    mTaskDescription = description.getText().toString();
 
-                    setResult(RESULT_OK, i3);
+                    Intent intent = new Intent(this, MainActivity.class);
+                    listElement mTask = new listElement(mTaskName, mTaskDescription, taskPriority, reminder, calendar);
+
+                    intent.putExtra("Name", taskname.getText().toString());
+                    intent.putExtra(getResources().getString(R.string.taskResult), mTask);
+                    setResult(RESULT_OK, intent);
                     this.finish();
                 }
                 else
@@ -244,21 +271,14 @@ public class TaskCreator extends AppCompatActivity implements View.OnClickListen
 
     private boolean checkTime() {                                                                                                       //    Function checkTime() enables adding only if it is not set to happen
         final Calendar c = Calendar.getInstance();                                                                                      // in the past.
-        int tmpyear = c.get(Calendar.YEAR);
-        int tmpmonth = c.get(Calendar.MONTH);
-        int tmpday = c.get(Calendar.DAY_OF_MONTH);
-        int tmphour = c.get(Calendar.HOUR_OF_DAY);
-        int tmpminute = c.get(Calendar.MINUTE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
 
-        if(tmpyear == year && tmpmonth == month && tmpday == day && tmphour == hour && tmpminute <= minute)
-            return true;
-        else if(tmpyear == year && tmpmonth == month && tmpday == day && tmphour < hour)
-            return true;
-        else if(tmpyear == year && tmpmonth == month && tmpday < day)
-            return true;
-        else if(tmpyear == year && tmpmonth < month)
-            return true;
-        else if(tmpyear < year)
+        if(calendar.getTimeInMillis() > c.getTimeInMillis())
             return true;
         else
             return false;

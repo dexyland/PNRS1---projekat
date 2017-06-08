@@ -20,7 +20,7 @@
             android:layout_height="40dp"
             android:layout_marginBottom="15dp"
             android:layout_alignParentTop="true"
-            android:text="@string/taskName"
+            android:hint="@string/taskName"
             android:selectAllOnFocus="true"
             android:gravity="center"
             android:background="@drawable/round_editbox"/>
@@ -68,7 +68,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/description"
+            android:hint="@string/description"
             android:selectAllOnFocus="true"
             android:gravity="center"
             android:background="@drawable/round_editbox"/>

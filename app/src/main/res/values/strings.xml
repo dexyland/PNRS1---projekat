@@ -35,4 +35,11 @@
     <string name="rightButtonEditMode">Obriši</string>
     <string name="taskNameBox">Ime zadatka</string>
     <string name="taskDescBox">Opis zadatka</string>
+    <string name="taskResult">result</string>
+    <string name="taskPosition">position</string>
+    <string name="mode">mode</string>
+
+    <string name="lowPriority">low</string>
+    <string name="mediumPriority">medium</string>
+    <string name="highPriority">high</string>
 </resources>

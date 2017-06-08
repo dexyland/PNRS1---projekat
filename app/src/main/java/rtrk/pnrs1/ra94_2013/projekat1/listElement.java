@@ -1,45 +1,67 @@
 package rtrk.pnrs1.ra94_2013.projekat1;
 
-import java.io.Serializable;
+import android.support.v7.app.AppCompatActivity;
 
-public class listElement implements Serializable {
+import java.io.Serializable;
+import java.util.Calendar;
+
+public class listElement extends AppCompatActivity implements Serializable {
 
     protected String mTaskName;
     protected String mTaskDescription;
-    protected String mTaskDate;
     protected String mTaskPriority;
-
-    protected int mTaskHour;
-    protected int mTaskMinute;
+    protected String mTaskDate;
     protected int mTaskReminder;
+    protected int mTaskFinished;
+    protected int mTaskPositionId;
+    protected Calendar mCalendar;
 
-    protected long mTaskPositionId;
 
-    public listElement(long positionId, String name, String description, String date, int hour, int minute, String priority, int reminderSet)
+    public listElement(String name, String description, String priority, int reminderSet, Calendar calendar)
     {
-        mTaskPositionId = positionId;
+        mTaskPositionId = 0;
+        mTaskFinished = 0;
         mTaskName = name;
         mTaskDescription = description;
-        mTaskDate = date;
-        mTaskHour = hour;
-        mTaskMinute = minute;
+        mTaskDate = null;
         mTaskPriority = priority;
         mTaskReminder = reminderSet;
+        mCalendar = calendar;
+    }
+
+    public listElement(int positionID, String name,String description, String priority, int reminderSet, String displayDate, Calendar calendar, int finished)
+    {
+        mTaskPositionId = positionID;
+        mTaskFinished = finished;
+        mTaskName = name;
+        mTaskDescription = description;
+        mTaskDate = displayDate;
+        mTaskPriority = priority;
+        mTaskReminder = reminderSet;
+        mCalendar = calendar;
     }
 
     public void setTaskDescription(String mTaskDescription){
         this.mTaskDescription = mTaskDescription;
     }
 
+    public String getTaskDate(){
+        return mTaskDate;
+    }
+
+    public void setTaskDate(String taskDate){
+        this.mTaskDate = taskDate;
+    }
+
     public String getTaskDescription(){
         return mTaskDescription;
     }
 
-    public void setTaskId(long positionId){
+    public void setTaskId(int positionId){
         this.mTaskPositionId = positionId;
     }
 
-    public long getTaskId(){
+    public int getTaskId(){
         return mTaskPositionId;
     }
 
@@ -51,43 +73,15 @@ public class listElement implements Serializable {
         return mTaskName;
     }
 
-    public void setTaskDate(String mTaskDate){
-        this.mTaskDate = mTaskDate;
-    }
-
-    public String getTaskDate(){
-        return mTaskDate;
-    }
-
-    public void setmTaskPriority(String mTaskPriority){
+    public void setTaskPriority(String mTaskPriority){
         this.mTaskPriority = mTaskPriority;
     }
 
-    public String getmTaskPriority(){
+    public String getTaskPriority(){
         return mTaskPriority;
     }
 
-    public void setTaskHour(int mTaskHour){
-        this.mTaskHour = mTaskHour;
-    }
-
-    public int getTaskHour(){
-        return mTaskHour;
-    }
-
-    public void setTaskMinute(int mTaskMinute){
-        this.mTaskMinute = mTaskMinute;
-    }
-
-    public int getTaskMinute(){
-        return mTaskMinute;
-    }
-
-    public String getTaskTime(){
-        return pad(mTaskHour) + ":" + pad(mTaskMinute);
-    }
-
-    public void setmTaskReminder(int mTaskReminder){
+    public void setTaskReminder(int mTaskReminder){
         this.mTaskReminder = mTaskReminder;
     }
 
@@ -95,10 +89,54 @@ public class listElement implements Serializable {
         return mTaskReminder;
     }
 
-    private static String pad(int c) {                                                                                                  //     In case selected time (hours or minute field)
-        if (c >= 10)                                                                                                                    // are smaller then 10 this function adds '0' before
-            return String.valueOf(c);                                                                                                   // that field so the time format would always be the
-        else                                                                                                                            // same (HH:MM).
-            return "0" + String.valueOf(c);
+    public void setTaskFinished(int mTaskFinished){
+        this.mTaskFinished = mTaskFinished;
+    }
+
+    public int getTaskFinished(){
+        return mTaskFinished;
+    }
+
+    public void setTaskCalendar(Calendar calendar){
+        mCalendar = calendar;
+    }
+
+    public Calendar getTaskCalendar(){
+        return mCalendar;
+    }
+
+    public int getTaskYear(){
+        return mCalendar.get(Calendar.YEAR);
+    }
+    public void setTaskYear(int year){
+        this.mCalendar.set(Calendar.YEAR, year);
+    }
+
+    public int getTaskMonth(){
+        return mCalendar.get(Calendar.MONTH);
+    }
+    public void setTaskMonth(int month){
+        this.mCalendar.set(Calendar.MONTH, month);
+    }
+
+    public int getTaskDay(){
+        return mCalendar.get(Calendar.DAY_OF_MONTH);
+    }
+    public void setTaskDay(int day){
+        this.mCalendar.set(Calendar.DAY_OF_MONTH, day);
+    }
+
+    public int getTaskHour(){
+        return mCalendar.get(Calendar.HOUR_OF_DAY);
+    }
+    public void setTaskHour(int hour){
+        this.mCalendar.set(Calendar.HOUR_OF_DAY, hour);
+    }
+
+    public int getTaskMinute(){
+        return mCalendar.get(Calendar.MINUTE);
+    }
+    public void setTaskMinute(int minute){
+        this.mCalendar.set(Calendar.MINUTE, minute);
     }
 }

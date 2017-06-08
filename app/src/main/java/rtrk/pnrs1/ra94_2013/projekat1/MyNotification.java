@@ -42,7 +42,7 @@ public class MyNotification extends IMyAidlInterface.Stub{
         mNotificationBuilder.setContentTitle("Task manager");
         mNotificationBuilder.setSmallIcon(R.drawable.small_icon);
         mNotificationBuilder.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(),R.drawable.notif_icon));
-        mNotificationBuilder.setContentText("Task deleted!");
+        mNotificationBuilder.setContentText("Task '" + taskName + "' deleted!");
 
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(notifyId, mNotificationBuilder.build());

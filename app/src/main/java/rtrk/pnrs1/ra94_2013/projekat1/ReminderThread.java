@@ -15,7 +15,7 @@ public class ReminderThread  extends Thread{
 
     private NotificationManager mNotificationManager;
     private Notification.Builder mNotificationBuilder;
-    private String mNotificationString;
+    private String mNotificationString = null;
     private static int SLEEP_TIME = 5000;
     private Uri mUri;
     private int notifNum;
@@ -32,7 +32,6 @@ public class ReminderThread  extends Thread{
         mNotificationBuilder.setSmallIcon(R.drawable.small_icon);
         mUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         mNotificationBuilder.setSound(mUri);
-        mNotificationString = "";
         notifNum = 0;
     }
 
@@ -49,49 +48,39 @@ public class ReminderThread  extends Thread{
     public void run(){
         super.run();
         while(mCheck){
-            for(listElement mListElement : MainActivity.mTaskList)
-            {
-                if(mListElement.getTaskDate().equals(mContext.getResources().getString(R.string.today)) && mListElement.getTaskReminder() == 1){
-                    Calendar mCurrentDate = Calendar.getInstance();
+            if(!MainActivity.mTaskList.isEmpty()) {
+                for (listElement mListElement : MainActivity.mTaskList) {
+                    if (mListElement.getTaskReminder() == 1){
+                        Calendar mCurrentDate = Calendar.getInstance();
 
-                    if(mListElement.getTaskHour() == (int)mCurrentDate.get(Calendar.HOUR_OF_DAY)){
-                        if((mListElement.getTaskMinute() - mCurrentDate.get(Calendar.MINUTE)) == 15){
-                            if(mNotificationString.equals(""))
-                                mNotificationString = mListElement.getTaskName() + " (" + mListElement.getTaskTime() + ")";
-                            else
-                                mNotificationString += ", " + mListElement.getTaskName() + " (" + mListElement.getTaskTime() + ")";
-
+                        if (mListElement.getTaskCalendar().getTimeInMillis() - mCurrentDate.getTimeInMillis() < 900000) {
+                            mNotificationString = mListElement.getTaskName() + " (" + pad(mListElement.getTaskHour()) + ":" + pad(mListElement.getTaskMinute()) + ")";
                             mShowNotification = true;
-                            mListElement.setmTaskReminder(0);
-                        }
-                    }
-                    else if((mListElement.getTaskHour() - mCurrentDate.get(Calendar.HOUR_OF_DAY)) == 1){
-                        if((mListElement.getTaskMinute() + 60 - mCurrentDate.get(Calendar.MINUTE)) == 15 ){
-                            if(mNotificationString.equals(""))
-                                mNotificationString = mListElement.getTaskName() + " (" + mListElement.getTaskTime() + ")";
-                            else
-                                mNotificationString += ", " + mListElement.getTaskName() + " (" + mListElement.getTaskTime() + ")";
-
-                            mShowNotification = true;
-                            mListElement.setmTaskReminder(0);
+                            mListElement.setTaskReminder(0);
                         }
                     }
                 }
-            }
 
-            if(mShowNotification){
-                mNotificationBuilder.setContentText(mNotificationString);
-                mNotificationManager.notify(notifNum, mNotificationBuilder.build());
-                mShowNotification = false;
-                notifNum++;
-                mNotificationString = "";
-            }
+                if (mShowNotification) {
+                    mNotificationBuilder.setContentText(mNotificationString);
+                    mNotificationManager.notify(notifNum, mNotificationBuilder.build());
+                    mShowNotification = false;
+                    notifNum++;
+                }
 
-            try {
-                sleep(SLEEP_TIME);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                try {
+                    sleep(SLEEP_TIME);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
+    }
+
+    private static String pad(int c) {                                                              // Adds '0' to single number dates so the date format would always stay the same (DD-MM-YYYY)
+        if (c >= 10)
+            return String.valueOf(c);
+        else
+            return "0" + String.valueOf(c);
     }
 }

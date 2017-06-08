@@ -2,6 +2,7 @@ package rtrk.pnrs1.ra94_2013.projekat1;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,16 +31,19 @@ public class MyAdapter extends BaseAdapter{
         notifyDataSetChanged();
     }
 
-    public void editTask(int position, listElement mListElement)
-    {
-        mTaskList.remove(position);
-        mTaskList.add(position, mListElement);
-        notifyDataSetChanged();
-    }
-
     public void removeTask(int position)
     {
         mTaskList.remove(position);
+        notifyDataSetChanged();
+    }
+
+    public void update(listElement[] mTasks){
+        mTaskList.clear();
+
+        for(listElement mTask: mTasks)
+                mTaskList.add(mTask);
+
+        Log.d("ADAPTEEEEEEEEER", "PUNIM LISTUUU");
         notifyDataSetChanged();
     }
 
@@ -95,17 +99,19 @@ public class MyAdapter extends BaseAdapter{
         listElement mListElement = (listElement) getItem(position);
         final ViewHolder mViewHolder = (ViewHolder) mView.getTag();
         mViewHolder.mName.setText(mListElement.mTaskName);
-        mViewHolder.mDate.setText(mListElement.mTaskDate);
-        mViewHolder.mTime.setText(mListElement.getTaskTime());
+        String mTaskDate = pad(mListElement.getTaskDay()) + "-" + pad(mListElement.getTaskMonth()+1) + "-" + mListElement.getTaskYear();
+        mViewHolder.mDate.setText(mTaskDate);
+        String mTaskTime = pad(mListElement.getTaskHour()) +":"+ pad(mListElement.getTaskMinute());
+        mViewHolder.mTime.setText(mTaskTime);
 
         switch (mListElement.mTaskPriority){
-            case "green":
+            case "low":
                         mViewHolder.mPriority.setImageResource(R.drawable.green_list_icon);
                         break;
-            case "yellow":
+            case "medium":
                         mViewHolder.mPriority.setImageResource(R.drawable.yellow_list_icon);
                         break;
-            case "red":
+            case "high":
                         mViewHolder.mPriority.setImageResource(R.drawable.red_list_icon);
                         break;
         }
@@ -139,5 +145,12 @@ public class MyAdapter extends BaseAdapter{
         public ImageView mPriority = null;
         public ImageView mReminder = null;
         public CheckBox mCheckbox = null;
+    }
+
+    private static String pad(int c) {                                                              // Adds '0' to single number dates so the date format would always stay the same (DD-MM-YYYY)
+        if (c >= 10)
+            return String.valueOf(c);
+        else
+            return "0" + String.valueOf(c);
     }
 }
