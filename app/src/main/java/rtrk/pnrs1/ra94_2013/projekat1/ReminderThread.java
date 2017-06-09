@@ -49,11 +49,11 @@ public class ReminderThread  extends Thread{
         super.run();
         while(mCheck){
             if(!MainActivity.mTaskList.isEmpty()) {
+                Calendar mCurrentDate = Calendar.getInstance();
                 for (listElement mListElement : MainActivity.mTaskList) {
-                    Calendar mCurrentDate = Calendar.getInstance();
-
-                    if(mListElement.getTaskCalendar().getTimeInMillis() < mCurrentDate.getTimeInMillis())
+                    if(mListElement.getTaskCalendar().getTimeInMillis() <= mCurrentDate.getTimeInMillis()) {
                         mListElement.setTaskFinished(1);
+                    }
 
                     if (mListElement.getTaskReminder() == 1){
                         if (mListElement.getTaskCalendar().getTimeInMillis() - mCurrentDate.getTimeInMillis() < 900000) {

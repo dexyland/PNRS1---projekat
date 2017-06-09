@@ -15,7 +15,7 @@ public class PriorityGraph extends View{
     private Paint paint = new Paint();
     private int prior = 0;
     private int perc = 0;
-    private int percToDraw = 0;
+    private float percToDraw = 0;
     private boolean toDraw = true;
 
     public PriorityGraph(Context context, AttributeSet attrs){
@@ -23,7 +23,7 @@ public class PriorityGraph extends View{
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
     }
 
-    public void setPercToDraw(int perc){                                //  Sets the max value to be drawn.
+    public void setPercToDraw(float perc){                                //  Sets the max value to be drawn.
         this.percToDraw = perc;
     }
 
@@ -38,12 +38,14 @@ public class PriorityGraph extends View{
 
     public void refreshPerc()                                           //  Updates the percentage of circle that is drawn. Used to animate 'filling' the circle from '0' to max value.
     {                                                                   //  When the percentage reaches max value toDraw flag is set to false to stop the animation.
-        this.perc++;
+        if(this.percToDraw != 0) {
+            this.perc++;
 
-        if(this.perc == percToDraw)
-            toDraw = false;
+            if (this.perc == percToDraw)
+                toDraw = false;
 
-        invalidate();                                                   //  Invalidates the whole view. At some point in the future onDraw method will be called which will set new view. Necessary for
+            invalidate();
+        }                                                               //  Invalidates the whole view. At some point in the future onDraw method will be called which will set new view. Necessary for
     }                                                                   //  creating an animated view because it forces onDraw method to be called multiple times, each time with different view set.
 
     @Override
