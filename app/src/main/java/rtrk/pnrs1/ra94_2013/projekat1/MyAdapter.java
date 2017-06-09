@@ -18,6 +18,7 @@ public class MyAdapter extends BaseAdapter{
 
     private Context mContext;
     private ArrayList<listElement> mTaskList;
+    private MyDbHelper mDb;
 
     public MyAdapter(Context context)
     {
@@ -28,12 +29,6 @@ public class MyAdapter extends BaseAdapter{
     public void addTask(listElement mListElement)
     {
         mTaskList.add(mListElement);
-        notifyDataSetChanged();
-    }
-
-    public void removeTask(int position)
-    {
-        mTaskList.remove(position);
         notifyDataSetChanged();
     }
 
@@ -79,7 +74,7 @@ public class MyAdapter extends BaseAdapter{
         return mReturnValue;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent)
+    public View getView(final int position, View convertView, ViewGroup parent)
     {
         View mView = convertView;
         if(mView == null)
@@ -127,10 +122,17 @@ public class MyAdapter extends BaseAdapter{
                 if(isChecked)
                 {
                     mViewHolder.mName.setPaintFlags(mViewHolder.mName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    listElement mTask = MainActivity.mDb.readTask(String.valueOf(position+1));
+                    mTask.setTaskFinished(1);
+                    MainActivity.mDb.updateTask(mTask, String.valueOf(position+1));
+                    Log.d("ADAPTEEEEER","MENJAM FINISHED"+position);
                 }
                 else
                 {
                     mViewHolder.mName.setPaintFlags(mViewHolder.mName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+                    listElement mTask = MainActivity.mDb.readTask(String.valueOf(position+1));
+                    mTask.setTaskFinished(0);
+                    MainActivity.mDb.updateTask(mTask, String.valueOf(position+1));
                 }
             }
         });

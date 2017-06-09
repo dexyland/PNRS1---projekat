@@ -163,6 +163,7 @@ public class TaskCreator extends AppCompatActivity implements View.OnClickListen
                     listElement mTask = new listElement(mTaskName, mTaskDescription, taskPriority, reminder, calendar);
 
                     intent.putExtra("Name", taskname.getText().toString());
+                    intent.putExtra("Button", 0);
                     intent.putExtra(getResources().getString(R.string.taskResult), mTask);
                     setResult(RESULT_OK, intent);
                     this.finish();

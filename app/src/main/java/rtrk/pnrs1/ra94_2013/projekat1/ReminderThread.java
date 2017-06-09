@@ -20,7 +20,6 @@ public class ReminderThread  extends Thread{
     private Uri mUri;
     private int notifNum;
 
-
     public ReminderThread(Context context){
         mCheck = true;
         mContext = context;
@@ -51,15 +50,10 @@ public class ReminderThread  extends Thread{
             if(!MainActivity.mTaskList.isEmpty()) {
                 Calendar mCurrentDate = Calendar.getInstance();
                 for (listElement mListElement : MainActivity.mTaskList) {
-                    if(mListElement.getTaskCalendar().getTimeInMillis() <= mCurrentDate.getTimeInMillis()) {
-                        mListElement.setTaskFinished(1);
-                    }
-
                     if (mListElement.getTaskReminder() == 1){
                         if (mListElement.getTaskCalendar().getTimeInMillis() - mCurrentDate.getTimeInMillis() < 900000) {
                             mNotificationString = mListElement.getTaskName() + " (" + pad(mListElement.getTaskHour()) + ":" + pad(mListElement.getTaskMinute()) + ")";
                             mShowNotification = true;
-                            mListElement.setTaskReminder(0);
                         }
                     }
                 }

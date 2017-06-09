@@ -46,65 +46,48 @@ public class Statistics extends AppCompatActivity {
         float mediumTotal = 0;
         float lowDone = 0;
         float lowTotal = 0;
-        String priority;
-        Calendar current = Calendar.getInstance();
 
         listElement[] mTasks = mDb.readTasks();
 
         for(listElement mTask : mTasks){
-            priority = mTask.getTaskPriority();
-            Log.d("STATISTIKAAA", "ETO ME U FORUUUUUUUU" + mTask.getTaskPriority());
-            if(priority.equals("high")){
-                highTotal+=1;
-                if(mTask.getTaskCalendar().getTimeInMillis() <= current.getTimeInMillis())
-                    highDone+=1;
+            if(mTask.getTaskPriority().equals(getString(R.string.highPriority))){
+                highTotal++;
+                if(mTask.getTaskFinished() == 1)
+                    highDone++;
             }
 
             if(mTask.getTaskPriority().equals(getString(R.string.mediumPriority))){
-                mediumTotal+=1;
-                if(mTask.getTaskCalendar().getTimeInMillis() <= current.getTimeInMillis())
-                    mediumDone+=1;
+                mediumTotal++;
+                if(mTask.getTaskFinished() == 1)
+                    mediumDone++;
             }
 
             if(mTask.getTaskPriority().equals(getString(R.string.lowPriority))){
-                lowTotal+=1;
-                if(mTask.getTaskCalendar().getTimeInMillis() <= current.getTimeInMillis())
-                    lowDone+=1;
+                lowTotal++;
+                if(mTask.getTaskFinished() == 1)
+                    lowDone++;
             }
         }
 
-        Log.d("TOTAL", ""+highTotal);
-        Log.d("TOTAL", ""+mediumTotal);
-
-        Log.d("TOTALDONE", ""+highDone);
-        Log.d("TOTALDONE", ""+mediumDone);
-
-        if(highDone == 0)
-        {
+        if(highDone == 0) {
             highPerc = 0;
         }
-        else
-        {
+        else {
             highPerc = (int)mStatisticsNative.getStatisticsResult(highDone, highTotal);
         }
-        if(mediumDone == 0)
-        {
+
+        if(mediumDone == 0) {
             mediumPerc = 0;
         }
-        else
-        {
+        else {
             mediumPerc = (int)mStatisticsNative.getStatisticsResult(mediumDone, mediumTotal) ;
         }
-        if(lowDone == 0)
-        {
+
+        if(lowDone == 0) {
             lowPerc = 0;
         }
-        else
-        {
+        else {
             lowPerc = (int)mStatisticsNative.getStatisticsResult(lowDone, lowTotal);
         }
-
-        Log.d("HIGH", ""+highTotal);
-        Log.d("TOTAL", ""+mediumTotal);
     }
 }

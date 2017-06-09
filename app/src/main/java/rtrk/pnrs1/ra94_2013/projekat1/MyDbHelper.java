@@ -76,7 +76,6 @@ public class MyDbHelper extends SQLiteOpenHelper{
         mDb.close();
     }
 
-
     public listElement readTask(String id){
         SQLiteDatabase mDb = getReadableDatabase();
         Cursor cursor = mDb.query(TABLE_NAME, null, COLUMN_ID + "= ?",
