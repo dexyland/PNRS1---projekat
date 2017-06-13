@@ -40,12 +40,12 @@ public class Statistics extends AppCompatActivity {
     private void calculatePercentages(){
         MyDbHelper mDb = new MyDbHelper(this);
 
-        float highDone = 0;
-        float highTotal = 0;
-        float mediumDone = 0;
-        float mediumTotal = 0;
-        float lowDone = 0;
-        float lowTotal = 0;
+        int highDone = 0;
+        int highTotal = 0;
+        int mediumDone = 0;
+        int mediumTotal = 0;
+        int lowDone = 0;
+        int lowTotal = 0;
 
         listElement[] mTasks = mDb.readTasks();
 
